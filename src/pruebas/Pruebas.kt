@@ -1,5 +1,8 @@
 package pruebas
 
+import java.util.*
+import kotlin.concurrent.thread
+
 typealias myMap = MutableMap<String, List<String>>
 typealias myFun = (Int, String, myMap) -> Boolean
 
@@ -21,17 +24,17 @@ fun main() {
     myArray.addAll(listOf("Fabian", "22"))
 
     // bucles
-    for(x in 0..10){
+    for (x in 0..10) {
         // Tiene en cuenta el 10
     }
-    for(x in 0 until 10){
+    for (x in 0 until 10) {
         // No tiene en cuenta el 10
     }
-    for(x in 0..10 step 2){
+    for (x in 0..10 step 2) {
         // De dos en dos
     }
-    for(x in 10 downTo 0){
-         // De diez a cero
+    for (x in 10 downTo 0) {
+        // De diez a cero
     }
 
     // null safety
@@ -88,15 +91,57 @@ fun main() {
     val copiaJuan = juan.copy(work = "Programador Android")
     println(copiaJuan)
 
-    // data class también permite descomponer objetos en variables
-    val (juanName, juanAge, juanWork) = juan
-    println("Nombre $juanName; Edad $juanAge; Trabajo $juanWork")
+    // data class también permite desestructurar objetos, asignamos _ a las propiedades que no queramos desestructurar
+    val (juanName, _, juanWork) = juan
+    println("Nombre $juanName; Trabajo $juanWork")
 
     // typealias -> Permite crear alias para declaraciones o funciones
     val map: myMap = mutableMapOf()
 
     val function: myFun = {number, chain, mutableMap ->
-        number != 0 && chain != "" && !mutableMap.isNullOrEmpty()
+        number != 0 && chain != "" && mutableMap.isNotEmpty()
     }
 
+    val myMap = mapOf(1 to "Andres", 2 to "Fabian", 3 to "Rangel", 4 to "Mariño")
+    for((id, names) in myMap){
+        println("$id, $names")
+    }
+
+    // Probando funciones de extensión
+    val myDate = Date()
+    println(myDate.customFormat())
+    println(myDate.size)
+
+    // Probando funciones Lambda
+    val sumFun = fun (x: Int, y: Int): Int = x + y
+    val subtractionFun = fun (x: Int, y: Int): Int = x - y
+
+    println(calculate(10, 5, sumFun))
+    println(calculate(10, 5, subtractionFun))
+    println(calculate(10, 5) { x, y -> x * y })
+
+    asyncFun("Andrés"){
+        println(it)
+    }
+
+}
+
+fun calculate(x: Int, y: Int, myFun: (Int, Int) -> Int): Int{
+    return myFun(x, y)
+}
+
+fun asyncFun(name: String, hello: (String) -> Unit){
+    val message = "Hello $name!!"
+    thread {
+        Thread.sleep(5000)
+        hello(message)
+    }
+    thread {
+        Thread.sleep(10000)
+        hello(message)
+    }
+    thread {
+        Thread.sleep(15000)
+        hello(message)
+    }
 }
